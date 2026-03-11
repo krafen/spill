@@ -1,6 +1,4 @@
-streamlit 
-random
-time
+streamlit
 qrcode
-base64
-streamlit_autorefresh 
+streamlit-autorefresh
+pillow
