@@ -73,11 +73,34 @@ def show_qr():
         # Display the converted image
         st.image(qr_rgb, width=250, caption="Scan to join the game!")
 
+
+# =========================
+# LANDING PAGE (LOGIN)
+# =========================
+
+if "role" not in st.session_state:
+    st.title("🎮 Welcome to the Dare Game")
+    
+    role_choice = st.radio("Who are you?", ["Select Role", "Host", "Player"], index=0)
+    
+    if role_choice == "Host":
+        if st.button("Enter Host Room"):
+            st.session_state.role = "host"
+            st.rerun()
+            
+    elif role_choice == "Player":
+        player_name = st.text_input("Enter your name:")
+        if st.button("Join Game") and player_name:
+            st.session_state.role = "player"
+            st.session_state.player_name = player_name
+            st.rerun()
+    st.stop() # Stop execution here until they choose a role
+
 # =========================
 # HOST SCREEN
 # =========================
 
-if "host" in params:
+if st.session_state.role == "host":
 
     st.title("🎮 Dare Game Host")
 
@@ -243,9 +266,9 @@ if "host" in params:
 # PLAYER SCREEN
 # =========================
 
-elif "player" in params:
+elif st.session_state.role == "player":
 
-    name = params["player"]
+    name = st.session_state.player_name
 
     if name not in game["players"]:
 
@@ -411,18 +434,3 @@ elif "player" in params:
                             dare["resolved"] = True
 
 
-# =========================
-# LANDING PAGE
-# =========================
-
-else:
-
-    st.title("🎮 Dare Game")
-
-    st.write("Join using:")
-
-    st.code("?player=YourName")
-
-    st.write("Host screen:")
-
-    st.code("?host=true")
