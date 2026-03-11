@@ -10,7 +10,9 @@ import time
 import qrcode
 import base64
 from streamlit_autorefresh import st_autorefresh
+from PIL import Image
 
+    
 START_POINTS = 5000
 GUESS_REWARD = 300
 GUESS_PENALTY = 300
@@ -74,6 +76,54 @@ def show_qr():
         st.image(qr_rgb, width=250, caption="Scan for å bli med")
 
 
+
+
+# --- FUNCTION TO SET LOCAL BACKGROUND ---
+def set_bg_local(image_file):
+    with open(image_file, "rb") as f:
+        bin_str = base64.b64encode(f.read()).decode()
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("data:image/png;base64,{bin_str}");
+            
+            /* High-Res Scaling Fixes */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center center;
+            
+            /* Helps prevent blurring when scaling */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }}
+
+        /* Dark overlay remains to keep text sharp */
+        [data-testid="stVerticalBlock"] {{
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 15px;
+        }}
+        
+        h1, h2, h3, p, span, label {{
+            color: white !important;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Adds contrast to text */
+        }}
+        
+        /* Fjern hvit toppstripe (Streamlit header) */
+        header[data-testid="stHeader"] {{
+            background: transparent !important;
+        }}
+        
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+
+
 # =========================
 # LANDING PAGE (LOGIN)
 # =========================
@@ -101,7 +151,10 @@ if "role" not in st.session_state:
 # =========================
 
 if st.session_state.role == "host":
-
+    try:
+        set_bg_local('background.jpg') # Ensure this file is in your GitHub/Folder
+    except FileNotFoundError:
+        pass # Fallback to default if file is missing
     st.title("Drikkeleken")
 
     if game["phase"] == "lobby":
