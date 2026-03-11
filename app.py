@@ -61,16 +61,17 @@ def img_to_base64(img):
 # -------------------------
 
 def show_qr():
-
     st.subheader("Join Game")
-
-    join_url = st.text_input("Join URL")
-
+    join_url = st.text_input("Join URL (Enter your app URL here)")
     if join_url:
-
-        qr = qrcode.make(join_url)
-        st.image(qr, width=250)
-
+        # Generate the QR code
+        qr_img = qrcode.make(join_url)
+        
+        # Convert it to RGB to ensure Streamlit can display it
+        qr_rgb = qr_img.convert("RGB")
+        
+        # Display the converted image
+        st.image(qr_rgb, width=250, caption="Scan to join the game!")
 
 # =========================
 # HOST SCREEN
