@@ -61,8 +61,8 @@ def img_to_base64(img):
 # -------------------------
 
 def show_qr():
-    st.subheader("Join Game")
-    join_url = st.text_input("Join URL (Enter your app URL here)")
+    st.subheader("Bli med")
+    join_url = st.text_input("Skriv inn URL")
     if join_url:
         # Generate the QR code
         qr_img = qrcode.make(join_url)
@@ -71,7 +71,7 @@ def show_qr():
         qr_rgb = qr_img.convert("RGB")
         
         # Display the converted image
-        st.image(qr_rgb, width=250, caption="Scan to join the game!")
+        st.image(qr_rgb, width=250, caption="Scan for å bli med")
 
 
 # =========================
@@ -102,7 +102,7 @@ if "role" not in st.session_state:
 
 if st.session_state.role == "host":
 
-    st.title("Hostens drikkelek")
+    st.title("Drikkeleken")
 
     if game["phase"] == "lobby":
         st.subheader("Hva skal vi bli drita på i dag?")
