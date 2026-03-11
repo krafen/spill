@@ -79,17 +79,17 @@ def show_qr():
 # =========================
 
 if "role" not in st.session_state:
-    st.title("🎮 Welcome to the Dare Game")
+    st.title("🍾 Velkommen til Drikkeleken")
     
-    role_choice = st.radio("Who are you?", ["Select Role", "Host", "Player"], index=0)
+    role_choice = st.radio("Hvem er du?", ["Select Role", "Host", "Player"], index=0)
     
     if role_choice == "Host":
-        if st.button("Enter Host Room"):
+        if st.button("Gå inn i host rommet"):
             st.session_state.role = "host"
             st.rerun()
             
     elif role_choice == "Player":
-        player_name = st.text_input("Enter your name:")
+        player_name = st.text_input("Skriv inn navnet ditt:")
         if st.button("Join Game") and player_name:
             st.session_state.role = "player"
             st.session_state.player_name = player_name
@@ -102,15 +102,15 @@ if "role" not in st.session_state:
 
 if st.session_state.role == "host":
 
-    st.title("🎮 Dare Game Host")
+    st.title("Hostens drikkelek")
 
     if game["phase"] == "lobby":
-        st.subheader("🛠️ Setup Game Menu")
+        st.subheader("Hva skal vi bli drita på i dag?")
         
         with st.form("add_dare_form"):
-            new_dare = st.text_input("Dare Description (e.g., 'Do a backflip')")
-            new_price = st.number_input("Point Penalty for being caught", min_value=100, step=100, value=300)
-            add_btn = st.form_submit_button("Add to Menu")
+            new_dare = st.text_input("Drikke:")
+            new_price = st.number_input("Straff for å bli tatt", min_value=100, step=100, value=300)
+            add_btn = st.form_submit_button("Legg til")
             
             if add_btn and new_dare:
                 if new_dare not in game["menu_options"]:
@@ -120,15 +120,15 @@ if st.session_state.role == "host":
     
         # Show current menu
         if game["menu_options"]:
-            st.write("Current Menu:")
+            st.write("Gjeldende meny:")
             for d in game["menu_options"]:
                 st.write(f"- {d}: {game['menu_prices'][d]} pts")
     
-        if st.button("Start Menu Voting", disabled=len(game["menu_options"]) < 2):
+        if st.button("Stem på det som skal være med", disabled=len(game["menu_options"]) < 2):
             game["phase"] = "menu_vote"
 
 
-    if st.button("Reset Game"):
+    if st.button("Start på nytt"):
 
         game["players"].clear()
         game["points"].clear()
@@ -147,7 +147,7 @@ if st.session_state.role == "host":
 # PLAYER BOARD
 # -------------------------
 
-    st.header("Players")
+    st.header("Spillere")
 
     cols = st.columns(4)
 
@@ -173,7 +173,7 @@ if st.session_state.role == "host":
 
     if game["phase"] == "menu_vote":
 
-      st.header("Menu Votes")
+      st.header("Stemmer")
 
       vote_count = {}
 
@@ -184,7 +184,7 @@ if st.session_state.role == "host":
       for option in game["menu_options"]:
           st.write(option, "-", vote_count.get(option, 0))
 
-      if st.button("Start Game"):
+      if st.button("Start drikkinga"):
 
           sorted_votes = sorted(
               vote_count,
@@ -255,7 +255,7 @@ if st.session_state.role == "host":
 # HISTORY
 # -------------------------
 
-    st.header("Round History")
+    st.header("Runde Historikk")
 
     for item in reversed(game["history"]):
 
@@ -284,14 +284,14 @@ elif st.session_state.role == "player":
 
     if name not in game["avatars"]:
 
-        st.subheader("Take your player photo")
+        st.subheader("Ta bilde")
 
-        photo = st.camera_input("Take a selfie")
+        photo = st.camera_input("Ta en selfie")
 
         if photo is not None:
 
             game["avatars"][name] = photo
-            st.success("Photo saved!")
+            st.success("Bilde lagret")
 
         st.stop()
 
@@ -303,7 +303,7 @@ elif st.session_state.role == "player":
 
     if phase == "lobby":
 
-        st.info("Waiting for host")
+        st.info("Venter på host")
 
 # -------------------------
 # MENU VOTING
@@ -312,14 +312,14 @@ elif st.session_state.role == "player":
     elif phase == "menu_vote":
 
         picks = st.multiselect(
-            "Vote for dares",
+            "Stem på drikke",
             game["menu_options"]
         )
 
-        if st.button("Submit Votes"):
+        if st.button("Send inn stemmer"):
 
             game["votes"][name] = picks
-            st.success("Votes saved")
+            st.success("Stemmer lagret")
 
 # -------------------------
 # GAMEPLAY
@@ -327,7 +327,7 @@ elif st.session_state.role == "player":
 
     elif phase == "game":
 
-        st.header("Send Dare")
+        st.header("Send drikke")
 
         targets = [p for p in game["players"] if p != name]
 
@@ -359,7 +359,7 @@ elif st.session_state.role == "player":
                         "time": time.time()
                     })
 
-                    st.success("Dare sent")
+                    st.success("Drikke sendt")
 
 # -------------------------
 # RECEIVED DARES
@@ -367,7 +367,7 @@ elif st.session_state.role == "player":
 
         st.divider()
 
-        st.header("Dares You Received")
+        st.header("Du må:")
 
         for i, dare in enumerate(game["dares"]):
 
@@ -408,7 +408,7 @@ elif st.session_state.role == "player":
 
                             # Inside the player guess button logic:
                             if player == dare["sender"]:
-                                st.success("Correct!")
+                                st.success("Riktig!")
                                 # Use the custom price set by the host
                                 penalty = game["menu_prices"].get(dare["text"], 300) 
                                 
@@ -419,7 +419,7 @@ elif st.session_state.role == "player":
 
                             else:
 
-                                st.error("Wrong!")
+                                st.error("Feil!")
 
                                 game["points"][name] -= GUESS_PENALTY
 
