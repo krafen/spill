@@ -1,0 +1,6 @@
+streamlit 
+random
+time
+qrcode
+base64
+streamlit_autorefresh 
