@@ -28,14 +28,8 @@ def get_game():
         "points": {},
         "avatars": {},
         "phase": "lobby",
-        "menu_options": [
-            "Sing a song",
-            "10 pushups",
-            "Dance 30s",
-            "Embarrassing story",
-            "Speak in accent",
-            "Act like a chicken"
-        ],
+        "menu_options": [],  # Start empty
+        "menu_prices": {},   # New: Store price per dare
         "votes": {},
         "active_menu": [],
         "dares": [],
@@ -86,6 +80,30 @@ if "host" in params:
 
     st.title("🎮 Dare Game Host")
 
+    if game["phase"] == "lobby":
+        st.subheader("🛠️ Setup Game Menu")
+        
+        with st.form("add_dare_form"):
+            new_dare = st.text_input("Dare Description (e.g., 'Do a backflip')")
+            new_price = st.number_input("Point Penalty for being caught", min_value=100, step=100, value=300)
+            add_btn = st.form_submit_button("Add to Menu")
+            
+            if add_btn and new_dare:
+                if new_dare not in game["menu_options"]:
+                    game["menu_options"].append(new_dare)
+                    game["menu_prices"][new_dare] = new_price
+                    st.success(f"Added: {new_dare} ({new_price} pts)")
+    
+        # Show current menu
+        if game["menu_options"]:
+            st.write("Current Menu:")
+            for d in game["menu_options"]:
+                st.write(f"- {d}: {game['menu_prices'][d]} pts")
+    
+        if st.button("Start Menu Voting", disabled=len(game["menu_options"]) < 2):
+            game["phase"] = "menu_vote"
+
+
     if st.button("Reset Game"):
 
         game["players"].clear()
@@ -127,34 +145,31 @@ if "host" in params:
 
     st.write("Phase:", game["phase"])
 
-    if game["phase"] == "lobby":
+    
 
-        if st.button("Start Menu Voting"):
-            game["phase"] = "menu_vote"
+    if game["phase"] == "menu_vote":
 
-    elif game["phase"] == "menu_vote":
+      st.header("Menu Votes")
 
-        st.header("Menu Votes")
+      vote_count = {}
 
-        vote_count = {}
+      for player in game["votes"]:
+          for vote in game["votes"][player]:
+              vote_count[vote] = vote_count.get(vote, 0) + 1
 
-        for player in game["votes"]:
-            for vote in game["votes"][player]:
-                vote_count[vote] = vote_count.get(vote, 0) + 1
+      for option in game["menu_options"]:
+          st.write(option, "-", vote_count.get(option, 0))
 
-        for option in game["menu_options"]:
-            st.write(option, "-", vote_count.get(option, 0))
+      if st.button("Start Game"):
 
-        if st.button("Start Game"):
+          sorted_votes = sorted(
+              vote_count,
+              key=vote_count.get,
+              reverse=True
+          )
 
-            sorted_votes = sorted(
-                vote_count,
-                key=vote_count.get,
-                reverse=True
-            )
-
-            game["active_menu"] = sorted_votes[:4]
-            game["phase"] = "game"
+          game["active_menu"] = sorted_votes[:4]
+          game["phase"] = "game"
 
 # -------------------------
 # BIG SCREEN DARE DISPLAY
@@ -367,14 +382,16 @@ elif "player" in params:
 
                         if st.button(player, key=f"guess{i}_{idx}"):
 
+                            # Inside the player guess button logic:
                             if player == dare["sender"]:
-
                                 st.success("Correct!")
-
+                                # Use the custom price set by the host
+                                penalty = game["menu_prices"].get(dare["text"], 300) 
+                                
                                 game["points"][name] += GUESS_REWARD
-                                game["points"][player] -= GUESS_PENALTY
+                                game["points"][player] -= penalty
+                                result = f"{name} guessed {player} (Penalty: {penalty})"
 
-                                result = f"{name} guessed {player}"
 
                             else:
 
