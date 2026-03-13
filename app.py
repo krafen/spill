@@ -313,7 +313,7 @@ if st.session_state.role == "host":
     # -------------------------
     if phase == "lobby":
 
-        st.title("🍾 Lobby")
+        st.title("🍾 Oppsett")
 
         show_qr()
 
@@ -377,7 +377,7 @@ if st.session_state.role == "host":
             
     elif phase == "menu_vote":
 
-        st.title("🗳 Voting")
+        st.title("🗳 Valg")
 
         vote_count = {}
 
@@ -448,7 +448,7 @@ if st.session_state.role == "host":
             
             html += f"""
             <div class="dare-card card-top">
-            {top["target"]} must:<br>{top["text"]}
+            {top["target"]} må:<br>{top["text"]}
             </div>
             """
             
