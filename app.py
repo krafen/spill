@@ -575,7 +575,12 @@ elif st.session_state.role == "player":
 
             with cols[i % 4]:
 
-                st.image(game["avatars"][p], width=120)
+                avatar = game["avatars"].get(p)
+
+                if avatar:
+                    st.image(avatar, width=120)
+                else:
+                    st.write("👤")
 
                 if st.button(p, key=f"target_{p}"):
 
