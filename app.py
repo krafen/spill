@@ -230,14 +230,14 @@ def set_bg_local(image_file):
 if "role" not in st.session_state:
     st.title("🍾 Velkommen til Drikkeleken")
     
-    role_choice = st.radio("Hvem er du?", ["Select Role", "Host", "Player"], index=0)
+    role_choice = st.radio("Hvem er du?", ["Host", "Spiller"], index=0)
     
     if role_choice == "Host":
         if st.button("Gå inn i host rommet"):
             st.session_state.role = "host"
             st.rerun()
             
-    elif role_choice == "Player":
+    elif role_choice == "Spiller":
         player_name = st.text_input("Skriv inn navnet ditt:")
         if st.button("Join Game") and player_name:
             st.session_state.role = "player"
