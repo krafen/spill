@@ -175,6 +175,16 @@ if st.session_state.role == "host":
         if st.button("Game"):
             game["phase"] = "game"
             st.rerun()
+
+        if st.button("⬅ Back Phase"):
+            
+            idx = PHASE_FLOW.index(game["phase"])
+    
+            if idx > 0:
+                game["phase"] = PHASE_FLOW[idx-1]
+    
+            st.rerun()
+    
     if game["phase"] == "lobby":
         st.subheader("Sjekk barskapet og finn frem")
         
@@ -503,6 +513,7 @@ elif st.session_state.role == "player":
                             }
 
                             dare["resolved"] = True
+
 
 
 
