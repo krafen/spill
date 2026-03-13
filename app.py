@@ -301,15 +301,22 @@ if st.session_state.role == "host":
         
         if st.button("Restart Game"):
 
-            game["players"] = {}
-            game["points"] = {}
-            game["avatars"] = {}
-            game["votes"] = {}
-            game["dares"] = []
-            game["history"] = []
-            game["active_menu"] = []
-            game["phase"] = "lobby"
-
+            game.clear()
+        
+            game.update({
+                "players": {},
+                "points": {},
+                "avatars": {},
+                "phase": "lobby",
+                "menu_options": [],
+                "menu_prices": {},
+                "votes": {},
+                "active_menu": [],
+                "dares": [],
+                "history": [],
+                "reveal": None
+            })
+        
             st.rerun()
     phase = game["phase"]
 
