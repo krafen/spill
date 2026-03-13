@@ -443,32 +443,14 @@ if st.session_state.role == "host":
                 )
         unresolved = [d for d in game["dares"] if not d["resolved"]]
 
-        if unresolved:
-
-            dare = unresolved[-1]
-
-            recent = game["dares"][-2:] if game["dares"] else []
-
-            top = recent[-1]
-            behind = recent[0] if len(recent) > 1 else None
-            
-            html = '<div class="card-stack">'
-            
-            if behind:
-                html += f"""
-                <div class="dare-card card-back">
-                {behind["target"]}<br>{behind["text"]}
-                </div>
-                """
-            
-            html += f"""
-            <div class="dare-card card-top">
-            {top["target"]} må:<br>{top["text"]}
+        for dare in unresolved[::-1]:  # newest first
+        
+            html = f"""
+            <div class="dare-card card-top" style="position:relative; margin-top:20px;">
+            {dare["target"]} må:<br>{dare["text"]}
             </div>
             """
-            
-            html += "</div>"
-            
+        
             st.markdown(html, unsafe_allow_html=True)
             
             
