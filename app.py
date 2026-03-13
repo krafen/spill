@@ -94,8 +94,9 @@ st.markdown("""
 # SHARED GAME STATE
 # -------------------------
 
-if "game" not in st.session_state:
-    st.session_state.game = {
+@st.cache_resource
+def get_game():
+    return {
         "players": {},
         "points": {},
         "avatars": {},
@@ -109,7 +110,7 @@ if "game" not in st.session_state:
         "reveal": None
     }
 
-game = st.session_state.game
+game = get_game()
 
 
 
