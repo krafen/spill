@@ -329,7 +329,10 @@ if st.session_state.role == "host":
                 if p in game["avatars"]:
                     st.markdown('<div class="player-card">', unsafe_allow_html=True)
 
-                    st.image(game["avatars"][p], width=150)
+                    if game["avatars"][p]:
+                        st.image(game["avatars"][p], width=150)
+                    else:
+                        st.write("👤")
                     
                     st.markdown(f"### {p}")
                     st.write(game["points"].get(p,0),"pts")
@@ -499,18 +502,24 @@ elif st.session_state.role == "player":
 
     if name not in game["avatars"]:
 
-        st.subheader("Ta bilde")
-
+        st.subheader("Ta bilde (valgfritt)")
+    
         photo = st.camera_input("Ta en selfie")
-
-        if photo is not None:
-
-            game["avatars"][name] = photo
-            st.success("Bilde lagret")
-
+    
+        col1, col2 = st.columns(2)
+    
+        with col1:
+            if photo is not None:
+                game["avatars"][name] = photo
+                st.success("Bilde lagret")
+                st.rerun()
+    
+        with col2:
+            if st.button("Hopp over"):
+                game["avatars"][name] = None
+                st.rerun()
+    
         st.stop()
-
-    phase = game["phase"]
 
 # -------------------------
 # LOBBY
