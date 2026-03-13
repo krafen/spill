@@ -94,15 +94,14 @@ st.markdown("""
 # SHARED GAME STATE
 # -------------------------
 
-@st.cache_resource
-def get_game():
-    return {
+if "game" not in st.session_state:
+    st.session_state.game = {
         "players": {},
         "points": {},
         "avatars": {},
         "phase": "lobby",
-        "menu_options": [],  # Start empty
-        "menu_prices": {},   # New: Store price per dare
+        "menu_options": [],
+        "menu_prices": {},
         "votes": {},
         "active_menu": [],
         "dares": [],
@@ -110,7 +109,9 @@ def get_game():
         "reveal": None
     }
 
-game = get_game()
+game = st.session_state.game
+
+
 
 params = st.query_params
 
@@ -274,7 +275,12 @@ if st.session_state.role == "host":
         st.divider()
         st.subheader("Punish Player")
         
-        target = st.selectbox("Player", list(game["players"].keys()))
+        players = list(game["players"].keys())
+
+        if players:
+            target = st.selectbox("Player", players)
+        else:
+            st.info("No players yet")
         amount = st.number_input("Penalty",100,2000,300)
         
         if st.button("Apply Penalty"):
@@ -330,7 +336,12 @@ if st.session_state.role == "host":
                     st.markdown('<div class="player-card">', unsafe_allow_html=True)
 
                     if game["avatars"][p]:
-                        st.image(game["avatars"][p], width=150)
+                        avatar = game["avatars"].get(p)
+
+                        if avatar:
+                            st.image(avatar, width=150)
+                        else:
+                            st.write("👤")
                     else:
                         st.write("👤")
                     
@@ -435,7 +446,7 @@ if st.session_state.role == "host":
 
             dare = unresolved[-1]
 
-            recent = game["dares"][-2:]
+            recent = game["dares"][-2:] if game["dares"] else []
 
             top = recent[-1]
             behind = recent[0] if len(recent) > 1 else None
@@ -528,6 +539,8 @@ elif st.session_state.role == "player":
     if phase == "lobby":
 
         st.info("Venter på host")
+        
+    
 
 # -------------------------
 # MENU VOTING
