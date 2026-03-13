@@ -156,9 +156,27 @@ if st.session_state.role == "host":
     except FileNotFoundError:
         pass # Fallback to default if file is missing
     st.title("Drikkeleken")
+    with st.sidebar:
 
+        st.title("🎛 Host Control")
+
+        if st.button("Lobby"):
+            game["phase"] = "lobby"
+            st.rerun()
+
+        if st.button("Menu Setup"):
+            game["phase"] = "menu_setup"
+            st.rerun()
+
+        if st.button("Voting"):
+            game["phase"] = "menu_vote"
+            st.rerun()
+
+        if st.button("Game"):
+            game["phase"] = "game"
+            st.rerun()
     if game["phase"] == "lobby":
-        st.subheader("Hva skal vi bli drita på i dag?")
+        st.subheader("Sjekk barskapet og finn frem")
         
         with st.form("add_dare_form"):
             new_dare = st.text_input("Drikke:")
@@ -485,5 +503,6 @@ elif st.session_state.role == "player":
                             }
 
                             dare["resolved"] = True
+
 
 
