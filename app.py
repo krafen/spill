@@ -282,7 +282,7 @@ if st.session_state.role == "host":
             target = st.selectbox("Player", players)
         else:
             st.info("Ingen spillere enda")
-        amount = st.number_input("Penalty",100,2000,300)
+        amount = st.number_input("Straff",100,2000,300)
         
         if st.button("Gi ut straff"):
             game["points"][target] -= amount
