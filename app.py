@@ -371,7 +371,7 @@ if st.session_state.role == "host":
     
             new_dare = st.text_input("Drikke")
             new_price = st.number_input(
-                "Straff for å bli tatt",
+                "Pris",
                 min_value=100,
                 step=100,
                 value=300
@@ -670,6 +670,7 @@ elif st.session_state.role == "player":
                             }
 
                             dare["resolved"] = True
+
 
 
 
