@@ -137,16 +137,16 @@ def img_to_base64(img):
 
 def show_qr():
     st.subheader("Bli med")
-    join_url = st.text_input("Skriv inn URL")
-    if join_url:
+    #join_url = st.text_input("Skriv inn URL")
+    #if join_url:
         # Generate the QR code
-        qr_img = qrcode.make(join_url)
-        
-        # Convert it to RGB to ensure Streamlit can display it
-        qr_rgb = qr_img.convert("RGB")
-        
-        # Display the converted image
-        st.image(qr_rgb, width=250, caption="Scan for å bli med")
+    qr_img = qrcode.make("https://drikkelek.streamlit.app/")
+    
+    # Convert it to RGB to ensure Streamlit can display it
+    qr_rgb = qr_img.convert("RGB")
+    
+    # Display the converted image
+    st.image(qr_rgb, width=250, caption="Scan for å bli med")
 
 
 
