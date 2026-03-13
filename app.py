@@ -254,52 +254,52 @@ if st.session_state.role == "host":
 
     with st.sidebar:
 
-        st.title("🎛 Host Control")
+        st.title("🎛 Kontrollpanel")
 
-        if st.button("Lobby"):
+        if st.button("Opsett"):
             game["phase"] = "lobby"
             st.rerun()
 
-        if st.button("Menu Setup"):
+        if st.button("Drikkemeny"):
             game["phase"] = "menu_setup"
             st.rerun()
 
-        if st.button("Voting"):
+        if st.button("Valg"):
             game["phase"] = "menu_vote"
             st.rerun()
 
-        if st.button("Game"):
+        if st.button("spill"):
             game["phase"] = "game"
             st.rerun()
 
         
         st.divider()
-        st.subheader("Punish Player")
+        st.subheader("Straff spiller")
         
         players = list(game["players"].keys())
 
         if players:
             target = st.selectbox("Player", players)
         else:
-            st.info("No players yet")
+            st.info("Ingen spillere enda")
         amount = st.number_input("Penalty",100,2000,300)
         
-        if st.button("Apply Penalty"):
+        if st.button("Gi ut straff"):
             game["points"][target] -= amount
-            st.success("Penalty applied")
+            st.success("Straff gitt")
         
-        if st.button("Reveal Sender"):
+        if st.button("Vis sender"):
 
             unresolved = [d for d in game["dares"] if not d["resolved"]]
         
             if unresolved:
                 dare = unresolved[-1]
         
-                st.warning(f"Sender was: {dare['sender']}")
+                st.warning(f"Sender var: {dare['sender']}")
         
                 dare["resolved"] = True
         
-        if st.button("Restart Game"):
+        if st.button("Start spillet på nytt"):
 
             game.clear()
         
@@ -360,7 +360,7 @@ if st.session_state.role == "host":
 
         st.divider()
 
-        if st.button("Gå til meny setup"):
+        if st.button("Gå til lag drikke MEny"):
             game["phase"] = "menu_setup"
             st.rerun()
     elif phase == "menu_setup":
@@ -393,7 +393,7 @@ if st.session_state.role == "host":
     
         st.divider()
     
-        if st.button("Start voting"):
+        if st.button("Start valg"):
             game["phase"] = "menu_vote"
             st.rerun()
             
@@ -410,7 +410,7 @@ if st.session_state.role == "host":
         for option in game["menu_options"]:
             st.write(option, "-", vote_count.get(option, 0))
 
-        if st.button("Start Game"):
+        if st.button("Start Spillet"):
 
             sorted_votes = sorted(
                 vote_count,
@@ -424,7 +424,7 @@ if st.session_state.role == "host":
             
     elif phase == "game":
 
-        st.title("🎯 Game")
+        st.title("🎯 Spillet er i gagn")
         st.subheader("🏆 Scoreboard")
 
         scores = sorted(
@@ -470,7 +470,7 @@ if st.session_state.role == "host":
     
     with st.sidebar:
     
-        if st.button("⬅ Back Phase"):
+        if st.button("⬅ Gå tilbake"):
             
             idx = PHASE_FLOW.index(game["phase"])
     
@@ -629,7 +629,7 @@ elif st.session_state.role == "player":
                 random.shuffle(options)
 
                 cols = st.columns(len(options))
-
+                st.header("Gjett hvem som ga deg drikke:")
                 for idx, player in enumerate(options):
 
                     with cols[idx]:
@@ -652,7 +652,7 @@ elif st.session_state.role == "player":
                                 
                                 game["points"][name] += GUESS_REWARD
                                 game["points"][player] -= penalty
-                                result = f"{name} guessed {player} (Penalty: {penalty})"
+                                result = f"{name} gjettet {player} (Penalty: {penalty})"
 
 
                             else:
@@ -661,7 +661,7 @@ elif st.session_state.role == "player":
 
                                 game["points"][name] -= GUESS_PENALTY
 
-                                result = f"{name} failed to guess {dare['sender']}"
+                                result = f"{name} rakk ikke gjette {dare['sender']}"
 
                             game["history"].append(result)
 
