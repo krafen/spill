@@ -535,7 +535,7 @@ elif st.session_state.role == "player":
 # -------------------------
 # LOBBY
 # -------------------------
-
+    phase = game["phase"]
     if phase == "lobby":
 
         st.info("Venter på host")
