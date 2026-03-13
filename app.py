@@ -360,7 +360,7 @@ if st.session_state.role == "host":
 
         st.divider()
 
-        if st.button("Gå til lag drikke MEny"):
+        if st.button("Lag drikke Meny"):
             game["phase"] = "menu_setup"
             st.rerun()
     elif phase == "menu_setup":
@@ -670,5 +670,6 @@ elif st.session_state.role == "player":
                             }
 
                             dare["resolved"] = True
+
 
 
